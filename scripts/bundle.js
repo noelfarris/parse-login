@@ -32587,7 +32587,20 @@ var React = require('react');
 module.exports = React.createClass({
 	displayName: "exports",
 
+	getInitialState: function getInitialState() {
+		return {
+			error: null
+		};
+	},
 	render: function render() {
+		var errorElement = null;
+		if (this.state.error) {
+			errorElement = React.createElement(
+				"p",
+				{ className: "red" },
+				this.state.error
+			);
+		}
 		return React.createElement(
 			"div",
 			{ className: "container" },
@@ -32595,12 +32608,66 @@ module.exports = React.createClass({
 				"div",
 				{ className: "row" },
 				React.createElement(
-					"h1",
-					null,
-					"Login"
+					"form",
+					{ className: "col s12", onSubmit: this.onRegister },
+					React.createElement(
+						"h1",
+						null,
+						"Login"
+					),
+					errorElement,
+					React.createElement(
+						"div",
+						null,
+						React.createElement(
+							"label",
+							null,
+							"Username"
+						),
+						React.createElement("input", { type: "text", ref: "username" })
+					),
+					React.createElement(
+						"div",
+						null,
+						React.createElement(
+							"label",
+							null,
+							"Password"
+						),
+						React.createElement("input", { type: "text", ref: "password" })
+					),
+					React.createElement(
+						"button",
+						null,
+						"Log In"
+					)
 				)
 			)
 		);
+	},
+	onRegister: function onRegister(e) {
+		var _this = this;
+
+		e.preventDefault();
+		var userName = this.refs.username.getDOMNode().value;
+		var passWord = this.refs.password.getDOMNode().value;
+
+		var User = new Parse.User();
+
+		Parse.User.logIn(userName, passWord, {
+			success: function success(User) {
+				console.log('success', User);
+				_this.setState({
+					error: null
+				});
+				_this.props.router.navigate('dashboard', { trigger: true });
+			},
+			error: function error(User, _error) {
+				_this.setState({
+					error: _error.message
+				});
+			}
+		});
 	}
 });
 
@@ -32769,6 +32836,7 @@ var React = require('react');
 var Backbone = require('backbone');
 window.$ = require('jquery');
 window.jQuery = $;
+Parse.initialize("vPuaJGkev3liDxT8CMgHVCb9lEDUQl4dHLjvASbk", "gi9HGZiD6SohBfoI9GKqVLJ8793opLqjI3tGaH4d");
 
 var NavigationComponent = require('./components/NavigationComponent');
 var HomeComponent = require('./components/HomeComponent');
@@ -32794,7 +32862,7 @@ var Router = Backbone.Router.extend({
 		React.render(React.createElement(DashboardComponent, null), app);
 	},
 	login: function login() {
-		React.render(React.createElement(LoginComponent, null), app);
+		React.render(React.createElement(LoginComponent, { router: r }), app);
 	},
 	register: function register() {
 		React.render(React.createElement(RegisterComponent, { router: r }), app);
