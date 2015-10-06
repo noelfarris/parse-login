@@ -53,6 +53,7 @@ module.exports = React.createClass({
 					error: error.message
 				});
 			}
-		})
+		});
 	}
+	
 });

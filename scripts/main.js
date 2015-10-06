@@ -14,31 +14,41 @@ var RegisterComponent = require('./components/RegisterComponent');
 
 var app = document.getElementById('app');
 
-React.render(
-	<NavigationComponent />,
-	document.getElementById('nav')
+React.render( < NavigationComponent / > ,
+    document.getElementById('nav')
 );
 
 var Router = Backbone.Router.extend({
-	routes: {
-		'': 'home',
-		'dashboard': 'dashboard',
-		'login': 'login',
-		'register': 'register'
-	},
-	home: function() {
-		React.render(<HomeComponent />, app);
-	},
-	dashboard: function() {
-		React.render(<DashboardComponent />, app);
-	},
-	login: function() {
-		React.render(<LoginComponent router={r} />, app);
-	},
-	register: function() {
-		React.render(<RegisterComponent router={r} />, app);
-	}
-});
+            routes: {
+                '': 'home',
+                'dashboard': 'dashboard',
+                'login': 'login',
+                'register': 'register'
+            },
+            home: function() {
+                React.render( < HomeComponent / > , app);
+            },
+            dashboard: function() {
+            	if(Parse.User.current()){
+					React.render(<DashboardComponent />, app);
+				}
+				if(!Parse.User.current()) {
+					React.render(<LoginComponent router={r} />, app);
+				}
 
-var r = new Router();
-Backbone.history.start();
+            },
+            login: function() {
+                React.render( < LoginComponent router = {r} />, app);
+                        
+            },
+            register: function() {
+				React.render(<RegisterComponent router={r} />, app);
+			}     
+            });        
+
+
+
+                
+            
+
+        var r = new Router(); Backbone.history.start();

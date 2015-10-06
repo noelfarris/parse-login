@@ -32669,6 +32669,7 @@ module.exports = React.createClass({
 			}
 		});
 	}
+
 });
 
 },{"react":159}],163:[function(require,module,exports){
@@ -32849,28 +32850,32 @@ var app = document.getElementById('app');
 React.render(React.createElement(NavigationComponent, null), document.getElementById('nav'));
 
 var Router = Backbone.Router.extend({
-	routes: {
-		'': 'home',
-		'dashboard': 'dashboard',
-		'login': 'login',
-		'register': 'register'
-	},
-	home: function home() {
-		React.render(React.createElement(HomeComponent, null), app);
-	},
-	dashboard: function dashboard() {
-		React.render(React.createElement(DashboardComponent, null), app);
-	},
-	login: function login() {
-		React.render(React.createElement(LoginComponent, { router: r }), app);
-	},
-	register: function register() {
-		React.render(React.createElement(RegisterComponent, { router: r }), app);
-	}
+    routes: {
+        '': 'home',
+        'dashboard': 'dashboard',
+        'login': 'login',
+        'register': 'register'
+    },
+    home: function home() {
+        React.render(React.createElement(HomeComponent, null), app);
+    },
+    dashboard: function dashboard() {
+        if (Parse.User.current()) {
+            React.render(React.createElement(DashboardComponent, null), app);
+        }
+        if (!Parse.User.current()) {
+            React.render(React.createElement(LoginComponent, { router: r }), app);
+        }
+    },
+    login: function login() {
+        React.render(React.createElement(LoginComponent, { router: r }), app);
+    },
+    register: function register() {
+        React.render(React.createElement(RegisterComponent, { router: r }), app);
+    }
 });
 
-var r = new Router();
-Backbone.history.start();
+var r = new Router();Backbone.history.start();
 
 },{"./components/DashboardComponent":160,"./components/HomeComponent":161,"./components/LoginComponent":162,"./components/NavigationComponent":163,"./components/RegisterComponent":164,"backbone":1,"jquery":4,"react":159}]},{},[165])
 
